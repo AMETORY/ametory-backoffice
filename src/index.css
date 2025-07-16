@@ -1,0 +1,217 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+@import "tailwindcss";
+@plugin "flowbite-react/plugin/tailwindcss";
+@source "../.flowbite-react/class-list.json";
+@layer theme, base, components, utilities;
+@import "tailwindcss/preflight.css" layer(base);
+@custom-variant dark (&:where(.dark, .dark *));
+
+* {
+  font-family: "Lato", sans-serif;
+  font-optical-sizing: auto;
+  overscroll-behavior-y: none;
+}
+
+.sidebar-admin > div {
+  @apply rounded-l-none rounded-tr-none rounded-br-2xl bg-gradient-to-t from-[#1A202C] to-[#35548a];
+}
+.sidebar > div {
+  @apply rounded-l-none rounded-tr-none rounded-br-2xl bg-gradient-to-t from-[#72CAEE] to-[#0D92F4];
+}
+.sidebar img,
+.sidebar-admin img {
+  @apply h-16;
+}
+
+.sidebar li svg,
+.sidebar-admin li svg {
+  @apply text-gray-100 transition-all;
+}
+.sidebar li,
+.sidebar-admin li {
+  @apply cursor-pointer hover:text-gray-800;
+}
+
+.sidebar-admin li > button,
+.sidebar-admin li > a {
+  @apply cursor-pointer text-white hover:bg-[#35548a] hover:text-gray-800;
+}
+
+.sidebar li > button,
+.sidebar li > a {
+  @apply cursor-pointer text-white hover:bg-[#0D92F4] hover:text-gray-800;
+}
+
+body {
+  overscroll-behavior-x: none;
+}
+
+h1 {
+  @apply mb-0 text-5xl font-bold text-gray-800;
+}
+
+h2 {
+  @apply mb-0 text-3xl font-bold text-gray-800;
+}
+
+h3 {
+  @apply mb-0 text-2xl font-bold text-gray-800;
+}
+
+h4 {
+  @apply mb-0 text-xl font-bold text-gray-800;
+}
+
+h5 {
+  @apply mb-0 text-lg font-bold text-gray-800;
+}
+
+h6 {
+  @apply mb-0 font-bold text-gray-800;
+}
+.input {
+}
+.input-time {
+  @apply w-full rounded-lg border border-gray-400 !bg-white px-3 py-1.5 text-sm !text-gray-700 focus:ring-2 focus:ring-[#72CAEE] focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-200;
+}
+
+.input-time[disabled] {
+  @apply cursor-not-allowed border-gray-300 !text-gray-400;
+}
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select,
+textarea {
+  @apply w-full rounded-lg border border-gray-300 !bg-white px-3 py-2 !text-gray-700 focus:ring-2 focus:ring-[#72CAEE] focus:outline-none;
+}
+input[type="file"] {
+  @apply w-full rounded-lg border border-gray-300 !bg-white !text-gray-700 focus:ring-2 focus:ring-[#72CAEE] focus:outline-none;
+}
+
+.title-page {
+  @apply mb-4 text-2xl font-bold text-gray-800;
+}
+
+.icon-success {
+  @apply cursor-pointer text-green-400 hover:text-green-800;
+}
+.icon-edit {
+  @apply cursor-pointer text-sky-400 hover:text-sky-800;
+}
+.icon-publish {
+  @apply cursor-pointer text-green-400 hover:text-green-800;
+}
+.icon-delete {
+  @apply cursor-pointer text-red-400 hover:text-red-800;
+}
+
+.action {
+  @apply flex gap-2;
+}
+
+.search input {
+  @apply rounded-2xl border-gray-300 !bg-white pr-8 pl-8 !text-gray-700 focus:ring-2 focus:ring-[#72CAEE] focus:outline-none;
+}
+
+.modal h3 {
+  @apply text-xl font-bold text-gray-800;
+}
+.modal-header {
+  @apply border-b-gray-200;
+}
+
+.modal-body {
+  @apply min-h-32 space-y-4;
+}
+
+.modal-footer {
+  @apply flex justify-end border-t-gray-200;
+}
+
+.modal-footer button {
+  @apply w-24;
+}
+
+.pagination button {
+  @apply min-w-12 cursor-pointer px-2 py-2 text-xs;
+}
+
+.table td {
+  @apply text-gray-700;
+}
+
+label {
+  @apply mb-2 block font-bold text-gray-700;
+}
+
+.sidebar-admin .menu-active {
+  @apply bg-[#296e8b] text-gray-800;
+}
+.menu-active {
+  @apply bg-[#0D92F4] text-gray-800;
+}
+
+.rbc-toolbar-item {
+  @apply text-sm text-gray-700;
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 400px;
+}
+
+.tabs {
+}
+.tabs > div button {
+  /* @apply border-b-[#0D92F4]; */
+}
+
+.dropzone {
+  @apply min-h-32 w-full items-center justify-center border-2 border-dashed border-gray-100 bg-gray-100 p-4;
+}
+.dropzone > div {
+  @apply flex h-full w-full flex-col items-center justify-center;
+}
+
+.rsw-ce {
+  @apply h-[500px] !overflow-auto text-gray-700;
+}
+.rsw-toolbar {
+  @apply !static top-0 right-0 left-0;
+}
+.rsw-editor {
+}
+
+select.rsw-dd {
+  @apply w-fit border-none border-gray-400 bg-none p-0;
+}
+
+.orgButton {
+  padding: 5px 20px;
+  border-radius: 8px;
+  min-width: 200px;
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  display: inline-block;
+  border: 1px solid #0d92f4;
+  cursor: pointer;
+}
+.orgButton.checked {
+  padding: 5px 20px;
+  border-radius: 8px;
+  display: inline-block;
+  background-color: #0d92f4;
+  color: white;
+  cursor: pointer;
+}
+
+.select [class$="singleValue"] {
+  @apply px-1 text-sm;
+}
+
+[inputmode="decimal"] {
+  @apply text-sm;
+}

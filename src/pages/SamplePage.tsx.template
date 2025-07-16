@@ -1,0 +1,80 @@
+import { useContext, useEffect, useState, type FC } from "react";
+import TableLayout from "../components/TableLayout";
+import { LoadingContext } from "../contexts/LoadingContext";
+import { PermissionContext } from "../contexts/ProfileContext";
+import { SearchContext } from "../contexts/SearchContext";
+import type { PaginationResponse } from "../objects/pagination";
+import type { SampleModel } from "../models/sample";
+import Moment from "react-moment";
+import { getLectures } from "../services/api/lectureApi";
+import { getPagination } from "../utils/helper";
+
+interface SamplePageProps {}
+
+const SamplePage: FC<SamplePageProps> = ({}) => {
+  const { loading, setLoading } = useContext(LoadingContext);
+  const { permissions } = useContext(PermissionContext);
+  const [samples, setSamples] = useState<SampleModel[]>([]);
+  const [pagination, setPagination] = useState<PaginationResponse>();
+  const [page, setPage] = useState(1);
+  const [size, setSize] = useState(10);
+  const { search, setSearch } = useContext(SearchContext);
+  const [mounted, setMounted] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      getAllSamples();
+    }
+  }, [page, size, search, mounted]);
+
+  const getAllSamples = () => {
+    setLoading(true);
+    getLectures({ page: search ? 1 : page, size, search: search })
+      .then((resp: any) => {
+        setSamples(resp.data.items);
+        setPagination(getPagination(resp.data));
+      })
+      .finally(() => setLoading(false));
+  };
+
+  return (
+    <TableLayout
+      permission="sample:sample:read"
+      permissionCreate="sample:sample:create"
+      breadcrumb={[
+        { label: "Sample", link: "" },
+        { label: "Sample", link: "/sample" },
+      ]}
+      title="Sample"
+      onSearch={setSearch}
+      showModal={showModal}
+      setShowModal={setShowModal}
+      onAddClick={() => setShowModal(true)}
+      page={page}
+      setPage={setPage}
+      size={size}
+      setSize={setSize}
+      tableHeader={["Sample", "Sample"]}
+      tableBody={samples.map((val) => [val.sample, val.sample])}
+      tableData={samples}
+      onSaveModal={async () => {
+        try {
+          setLoading(true);
+          toast.success("Feature berhasil disimpan");
+          setShowModal(false);
+        } catch (error) {
+          toast.error(`${error}`);
+        } finally {
+          setLoading(false);
+        }
+      }}
+      modalContent={undefined}
+    />
+  );
+};
+export default SamplePage;
