@@ -1,54 +1,86 @@
 import {
   Sidebar,
+  SidebarCollapse,
   SidebarItem,
   SidebarItemGroup,
   SidebarItems,
   SidebarLogo,
 } from "flowbite-react";
-import { useContext, useEffect, useState, type FC } from "react";
+import { useEffect, useState, type FC } from "react";
 import { BsPeople } from "react-icons/bs";
-import { GrMapLocation, GrUserAdmin } from "react-icons/gr";
-import { HiOutlineChartPie } from "react-icons/hi";
-import { HiOutlineDocumentCheck } from "react-icons/hi2";
-import { LuLock, LuLogOut } from "react-icons/lu";
-import {
-  MdFeaturedPlayList,
-  MdOutlineChecklist,
-  MdSupportAgent,
-} from "react-icons/md";
-import { useLocation, useNavigate } from "react-router";
-import { ProfileContext } from "../contexts/ProfileContext";
-import { useAuth } from "../hooks/useAuth";
 import { GoDeviceMobile, GoGear } from "react-icons/go";
-import { VscChecklist } from "react-icons/vsc";
-interface CustomSidebarProps {}
-const CustomSidebar: FC<CustomSidebarProps> = ({}) => {
-  const { profile } = useContext(ProfileContext);
+import { HiOutlineChartPie } from "react-icons/hi";
+import { LuLock, LuLogOut } from "react-icons/lu";
+import { MdSupportAgent } from "react-icons/md";
+import { useLocation, useNavigate } from "react-router";
+import { useAuth } from "../hooks/useAuth";
+
+const menuItems = [
+  {
+    label: "Dashboard",
+    path: "/",
+    icon: HiOutlineChartPie,
+  },
+  {
+    label: "Pengguna",
+    path: "/user",
+    icon: BsPeople,
+  },
+  {
+    label: "Pengaturan",
+    icon: GoGear,
+    children: [
+      {
+        label: "Hak Akses",
+        path: "/role",
+        icon: LuLock,
+      },
+      {
+        label: "Device",
+        path: "/device",
+        icon: GoDeviceMobile,
+      },
+      {
+        label: "Agent",
+        path: "/agent",
+        icon: MdSupportAgent,
+      },
+      {
+        label: "Pengaturan",
+        path: "/setting",
+        icon: GoGear,
+      },
+    ],
+  },
+];
+
+const CustomSidebar: FC = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
-  const [openMaster, setOpenMaster] = useState(false);
-  const [openSetting, setOpenSetting] = useState(false);
-
   const location = useLocation();
+  const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({});
 
-  const checkPermissions = (permission: string) => {
-    return true;
-  };
+  const isActive = (path: string) => location.pathname === path;
 
   useEffect(() => {
-    // console.log(location.pathname);
-    switch (location.pathname) {
-      case "/role":
-        setOpenSetting(true);
-        break;
-
-      default:
-        if (location.pathname.includes("/company")) {
-          setOpenSetting(true);
+    const newOpenMenus: { [key: string]: boolean } = {};
+    menuItems.forEach((item) => {
+      if (item.children) {
+        const isChildActive = item.children.some(
+          (child) => child.path && isActive(child.path),
+        );
+        if (isChildActive) {
+          newOpenMenus[item.label] = true;
         }
-        break;
-    }
+      }
+    });
+    setOpenMenus(newOpenMenus);
   }, [location.pathname]);
+
+  const toggleMenu = (label: string) => {
+    setOpenMenus((prev) => ({ ...prev, [label]: !prev[label] }));
+  };
+
   return (
     <aside className="fixed top-0 left-0 z-40 h-screen w-64 -translate-x-full transition-transform sm:translate-x-0">
       <Sidebar
@@ -63,77 +95,44 @@ const CustomSidebar: FC<CustomSidebarProps> = ({}) => {
         </SidebarLogo>
         <SidebarItems>
           <SidebarItemGroup>
-            <SidebarItem
-              className={`cursor-pointer ${location.pathname === "/" ? "menu-active" : ""}`}
-              onClick={() => {
-                navigate("/");
-              }}
-              icon={HiOutlineChartPie}
-            >
-              Dashboard
-            </SidebarItem>
-
-            <SidebarItem
-              className={`cursor-pointer ${location.pathname === "/user" ? "menu-active" : ""}`}
-              onClick={() => {
-                navigate("/user");
-              }}
-              icon={BsPeople}
-            >
-              Pengguna
-            </SidebarItem>
-
-            <SidebarItem
-              className={`cursor-pointer ${location.pathname === "/role" ? "menu-active" : ""}`}
-              onClick={() => {
-                navigate("/role");
-              }}
-              icon={LuLock}
-            >
-              Hak Akses
-            </SidebarItem>
-            <SidebarItem
-              className={`cursor-pointer ${location.pathname === "/device" ? "menu-active" : ""}`}
-              onClick={() => {
-                navigate("/device");
-              }}
-              icon={GoDeviceMobile}
-            >
-              Device
-            </SidebarItem>
-            <SidebarItem
-              className={`cursor-pointer ${location.pathname === "/agent" ? "menu-active" : ""}`}
-              onClick={() => {
-                navigate("/agent");
-              }}
-              icon={MdSupportAgent}
-            >
-              Agent
-            </SidebarItem>
-
-            <SidebarItem
-              className={`cursor-pointer ${location.pathname === "/setting" ? "menu-active" : ""}`}
-              onClick={() => {
-                navigate("/setting");
-              }}
-              icon={GoGear}
-            >
-              Pengaturan
-            </SidebarItem>
+            {menuItems.map((item) =>
+              item.children ? (
+                <SidebarCollapse
+                  key={item.label}
+                  icon={item.icon}
+                  label={item.label}
+                  open={openMenus[item.label] || false}
+                  onClick={() => toggleMenu(item.label)}
+                >
+                  {item.children.map((child) => (
+                    <SidebarItem
+                      key={child.path}
+                      className={`cursor-pointer ${
+                        isActive(child.path!) ? "menu-active" : ""
+                      }`}
+                      onClick={() => navigate(child.path!)}
+                      icon={child.icon}
+                    >
+                      {child.label}
+                    </SidebarItem>
+                  ))}
+                </SidebarCollapse>
+              ) : (
+                <SidebarItem
+                  key={item.path}
+                  className={`cursor-pointer ${
+                    isActive(item.path!) ? "menu-active" : ""
+                  }`}
+                  onClick={() => navigate(item.path!)}
+                  icon={item.icon}
+                >
+                  {item.label}
+                </SidebarItem>
+              ),
+            )}
           </SidebarItemGroup>
         </SidebarItems>
       </Sidebar>
-      {/* <div
-        className="absolute rotate-[30deg]"
-        style={{
-          bottom: -66,
-          left: -80,
-          opacity: 0.3,
-          zIndex: 0,
-        }}
-      >
-        <img src="/icon-192.png" className="w-64 text-white" alt="" />
-      </div> */}
       <div className="absolute right-0 bottom-0 left-0">
         <ul className="w-full p-4">
           <li
@@ -148,4 +147,5 @@ const CustomSidebar: FC<CustomSidebarProps> = ({}) => {
     </aside>
   );
 };
+
 export default CustomSidebar;
